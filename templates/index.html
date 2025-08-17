@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Link Shortener</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/purecounterjs@1.5.0/dist/purecounter_vanilla.js"></script>
   <style>
     html, body {
       height: 100%;
@@ -45,7 +44,7 @@
       text-align: center;
       margin: 0;
       padding: 3rem 1rem;
-      background: rgba(0, 70, 160, 0.95); /* solid blue background */
+      background: rgba(0, 70, 160, 0.95);
     }
 
     /* Transparent glassy stat balls */
@@ -56,11 +55,8 @@
       border-radius: 50%;
       margin: 20px auto;
       overflow: hidden;
-
-      /* Show body background inside the ball */
       background: url('/static/bg.png') no-repeat center center fixed;
       background-size: cover;
-
       border: 3px solid rgba(255, 255, 255, 0.8);
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
       display: flex;
@@ -69,13 +65,12 @@
       align-items: center;
     }
 
-    /* Add a frosted layer inside for readability */
     .stat-ball::after {
       content: "";
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      background: rgba(0,0,0,0.35); /* dark tint for contrast */
+      background: rgba(0,0,0,0.35);
       backdrop-filter: blur(3px);
     }
 
@@ -105,7 +100,6 @@
       font-size: 0.9rem;
     }
 
-    /* Footer */
     footer {
       height: 5vh;
       display: flex;
@@ -139,19 +133,13 @@
   <div class="row">
     <div class="col-md-4">
       <div class="stat-ball">
-        <h3 id="totalLinks" class="purecounter"
-            data-purecounter-start="0"
-            data-purecounter-end="0"
-            data-purecounter-duration="1">0</h3>
+        <h3 id="totalLinks">0</h3>
         <p>Total Links</p>
       </div>
     </div>
     <div class="col-md-4">
       <div class="stat-ball">
-        <h3 id="totalRedirects" class="purecounter"
-            data-purecounter-start="0"
-            data-purecounter-end="0"
-            data-purecounter-duration="1">0</h3>
+        <h3 id="totalRedirects">0</h3>
         <p>Total Redirects</p>
       </div>
     </div>
@@ -164,50 +152,78 @@
   </div>
 </section>
 
-<!-- Footer -->
 <footer>
   <p class="mb-0">
-    &copy; 2025 Link Tracker | 
-    <a href="/about">About</a> | 
-    <a href="https://github.com/your-repo" target="_blank">GitHub</a> | 
+    &copy; 2025 Link Tracker |
+    <a href="/about">About</a> |
+    <a href="https://github.com/bousbiamouhamedbachir/shorten_website" target="_blank">GitHub</a> |
     <a href="/docs">Docs</a>
   </p>
 </footer>
 
 <script>
-  async function updateStats() {
-    const res = await fetch("/?json=1");
+// Simple counter function without libraries
+function animateCounter(elementId, target, duration = 1000) {
+  const element = document.getElementById(elementId);
+  let start = parseInt(element.textContent.replace(/,/g, '')) || 0;
+  const stepTime = 50;
+  const steps = duration / stepTime;
+  const increment = (target - start) / steps;
+
+  if (start === target) return;
+
+  const interval = setInterval(() => {
+    start += increment;
+    if ((increment > 0 && start >= target) || (increment < 0 && start <= target)) {
+      start = target;
+      clearInterval(interval);
+    }
+    element.textContent = Math.floor(start).toLocaleString();
+  }, stepTime);
+}
+
+async function updateStats() {
+  try {
+    const res = await fetch("/api/global_stats");
     const data = await res.json();
 
-    document.getElementById("totalLinks")
-      .setAttribute("data-purecounter-end", data.total_links);
-    document.getElementById("totalRedirects")
-      .setAttribute("data-purecounter-end", data.total_redirects);
+    animateCounter("totalLinks", data.total_links);
+    animateCounter("totalRedirects", data.total_redirects);
 
-    new PureCounter();
+    // Update top countries
+    const topCountries = document.getElementById("topCountries");
+    topCountries.innerHTML = data.top_countries.length === 0
+      ? "<li>No data</li>"
+      : data.top_countries.map(c => `<li>${c.country} - ${c.count}</li>`).join('');
 
-    let list = "";
-    data.top_countries.forEach(c => {
-      list += `<li>${c.country} - ${c.count}</li>`;
-    });
-    document.getElementById("topCountries").innerHTML = list;
+  } catch (err) {
+    console.error("Error fetching stats:", err);
   }
+}
 
-  document.getElementById("linkForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const url = document.getElementById("linkInput").value;
-    const res = await fetch("/add_link", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ link: url })
-    });
-    const data = await res.json();
-    document.getElementById("result").innerHTML =
-      `<div class="alert alert-success">Short link: <a href="/${data.id}" target="_blank">/${data.id}</a></div>`;
-    updateStats();
+// Handle new link submission
+document.getElementById("linkForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const url = document.getElementById("linkInput").value;
+  const res = await fetch("/add_link", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ link: url })
   });
+  const data = await res.json();
 
+  document.getElementById("result").innerHTML =
+    `<div class="alert alert-success">Short link: <a href="/${data.id}" target="_blank">/${data.id}</a></div>`;
+
+  updateStats(); // Refresh stats after adding new link
+});
+
+// Initial load
+document.addEventListener('DOMContentLoaded', () => {
   updateStats();
+  setInterval(updateStats, 5000); // Refresh stats every 5 seconds
+});
 </script>
+
 </body>
 </html>
