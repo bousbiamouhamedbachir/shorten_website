@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>API Documentation</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: url('/static/bg.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: "Segoe UI", sans-serif;
+      color: #fff;
+    }
+
+    h1, h5, h6 {
+      color: #fff;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.7);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .route-info {
+      flex: 1;
+      padding-right: 1rem;
+      border-right: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .sandbox {
+      flex: 1;
+      padding-left: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sandbox form, 
+    .sandbox button {
+      margin-bottom: .5rem;
+    }
+
+    pre {
+      flex: 1;
+      background: rgba(0,0,0,0.6);
+      color: #f8f9fa;
+      padding: .75rem;
+      border-radius: .5rem;
+      overflow: auto;
+    }
+
+    .btn-glass {
+      border-radius: 25px;
+      padding: 8px 18px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(0, 123, 255, 0.2);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .btn-glass:hover {
+      background: rgba(0, 123, 255, 0.4);
+      border-color: #00d4ff;
+    }
+
+    .btn-secondary { background: rgba(108,117,125,0.3); }
+    .btn-primary   { background: rgba(0,123,255,0.3); }
+    .btn-warning   { background: rgba(255,193,7,0.3); }
+    .btn-info      { background: rgba(23,162,184,0.3); }
+    .btn-dark      { background: rgba(33,37,41,0.4); }
+    .btn-success   { background: rgba(40,167,69,0.3); }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+  <h1 class="mb-4 text-center">📖 API Documentation</h1>
+
+  <!-- INDEX -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>GET /</h5>
+        <p>Returns index page or JSON stats if <code>?json=1</code>.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <button class="btn btn-secondary" onclick="testIndex()">Fetch</button>
+        <pre id="indexResponse">Response will appear here...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD LINK -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>POST /add_link</h5>
+        <p>Adds a new short link.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <form id="addLinkForm" class="d-flex">
+          <input type="url" id="sandboxLink" class="form-control" placeholder="https://example.com" required>
+          <button class="btn btn-primary ms-2">Send</button>
+        </form>
+        <pre id="addLinkResponse">Response will appear here...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- REDIRECT -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>GET /&lt;link_id&gt;</h5>
+        <p>Redirects to the original link and counts stats.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <form id="redirectForm" class="d-flex">
+          <input type="text" id="sandboxRedirectId" class="form-control" placeholder="Enter link_id" required>
+          <button class="btn btn-warning ms-2">Test</button>
+        </form>
+        <pre id="redirectResponse">Will actually redirect if valid link_id</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINK STATS -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>GET /&lt;link_id&gt;/stats</h5>
+        <p>Shows stats for a specific link.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <form id="linkStatsForm" class="d-flex">
+          <input type="text" id="sandboxLinkId" class="form-control" placeholder="Enter link_id" required>
+          <button class="btn btn-info ms-2">Fetch</button>
+        </form>
+        <pre id="linkStatsResponse">Response will appear here...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERAL STATS -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>GET /stats</h5>
+        <p>Shows general stats for all links.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <button class="btn btn-dark" onclick="testGeneralStats()">Fetch</button>
+        <pre id="generalStatsResponse">Response will appear here...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="card glass-card">
+    <div class="card-body">
+      <div class="route-info">
+        <h5>GET /about</h5>
+        <p>Static about page.</p>
+      </div>
+      <div class="sandbox">
+        <h6>Sandbox</h6>
+        <button class="btn btn-success" onclick="testAbout()">Open</button>
+        <pre id="aboutResponse">HTML page (opens in browser)</pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // INDEX
+  async function testIndex() {
+    const res = await fetch("/?json=1");
+    document.getElementById("indexResponse").textContent = JSON.stringify(await res.json(), null, 2);
+  }
+
+  // ADD LINK
+  document.getElementById("addLinkForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const link = document.getElementById("sandboxLink").value;
+    const res = await fetch("/add_link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ link })
+    });
+    document.getElementById("addLinkResponse").textContent = JSON.stringify(await res.json(), null, 2);
+  });
+
+  // REDIRECT (demo)
+  document.getElementById("redirectForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const id = document.getElementById("sandboxRedirectId").value;
+    document.getElementById("redirectResponse").textContent = `Will redirect to /${id}`;
+    window.open(`/${id}`, "_blank");
+  });
+
+  // LINK STATS
+  document.getElementById("linkStatsForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const linkId = document.getElementById("sandboxLinkId").value;
+    const res = await fetch(`/${linkId}/stats`);
+    if(res.headers.get("content-type")?.includes("application/json")) {
+      document.getElementById("linkStatsResponse").textContent = JSON.stringify(await res.json(), null, 2);
+    } else {
+      document.getElementById("linkStatsResponse").textContent = "HTML stats page (opened in browser)";
+      window.open(`/${linkId}/stats`, "_blank");
+    }
+  });
+
+  // GENERAL STATS
+  async function testGeneralStats() {
+    const res = await fetch("/stats");
+    document.getElementById("generalStatsResponse").textContent = res.headers.get("content-type").includes("application/json")
+      ? JSON.stringify(await res.json(), null, 2)
+      : "HTML page (opened in browser)";
+    if (!res.headers.get("content-type").includes("application/json")) {
+      window.open("/stats", "_blank");
+    }
+  }
+
+  // ABOUT
+  function testAbout() {
+    window.open("/about", "_blank");
+  }
+</script>
+</body>
+</html>

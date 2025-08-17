@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stats</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: url('/static/bg.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 20px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    h1, h3 {
+      text-align: center;
+      font-weight: 600;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem auto;
+      max-width: 400px;
+    }
+    ul li {
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0.4rem 0;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+
+    canvas {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container my-5">
+
+  <h1 class="mb-4">
+    {% if link %} Stats for {{ link.id }} {% else %} General Stats {% endif %}
+  </h1>
+
+  <h3>🌍 Top Countries</h3>
+  <ul>
+    {% for country, count in countries %}
+      <li>{{ country }} — {{ count }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3 class="mt-5">📊 Activity by Day of Week</h3>
+  <canvas id="chart"></canvas>
+
+</div>
+
+<script>
+const ctx = document.getElementById('chart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: {{ weekday_stats.keys()|list|tojson }},
+    datasets: [{
+      label: 'Redirects',
+      data: {{ weekday_stats.values()|list|tojson }},
+      backgroundColor: 'rgba(0, 173, 255, 0.6)',
+      borderColor: 'rgba(0, 173, 255, 1)',
+      borderWidth: 2,
+      borderRadius: 8
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {
+        labels: {
+          color: '#fff'
+        }
+      }
+    },
+    scales: {
+      x: { ticks: { color: '#fff' } },
+      y: { ticks: { color: '#fff' } }
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - Redirection Project</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: url('/static/bg.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    /* Glassmorphic Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      padding: 2rem;
+    }
+
+    .glass-card h2, 
+    .glass-card h5 {
+      color: #fff;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.6);
+    }
+
+    .glass-card p {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .btn-glass {
+      border-radius: 25px;
+      padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(0, 123, 255, 0.2);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .btn-glass:hover {
+      background: rgba(0, 123, 255, 0.4);
+      border-color: #00d4ff;
+      color: #fff;
+    }
+
+    .list-group-item {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border-radius: 12px;
+      margin: 0.3rem 0;
+    }
+    .list-group-item:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container py-5 d-flex justify-content-center align-items-center min-vh-100">
+    <div class="glass-card w-100 shadow-lg">
+
+      <!-- Project Title -->
+      <h2 class="mb-3">🔗 Redirection Project</h2>
+      <p>
+        The Redirection Project is a Flask + SQLAlchemy based system for managing links, tracking redirections,
+        and analyzing user statistics. It features real-time analytics, a stats dashboard, and link shortening
+        capabilities.
+      </p>
+
+      <!-- Docs Button -->
+      <a href="docs" class="btn btn-glass mb-4" target="_blank">
+        📖 View Documentation
+      </a>
+
+      <hr class="border-light">
+
+      <!-- Related Projects -->
+      <div class="mt-4">
+        <h5>Related Projects</h5>
+        <div class="list-group">
+          <a href="project1.html" class="list-group-item list-group-item-action">📊 Analytics Dashboard</a>
+          <a href="project2.html" class="list-group-item list-group-item-action">🌍 Geo-Redirects</a>
+          <a href="project3.html" class="list-group-item list-group-item-action">🔐 Secure Link System</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
